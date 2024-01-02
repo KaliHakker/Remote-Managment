@@ -83,7 +83,7 @@ class Serv(BaseHTTPRequestHandler):
             for item in list_of_post_data:
                 variable, value = item.split('=')
                 post_data_dict[variable] = value
-            os.system(unquote(post_data_dict["cmd"]).replace("+", " ") + ">> " + current "/output.txt")
+            os.system(unquote(post_data_dict["cmd"]).replace("+", " ") + ">> " + current + "/output.txt")
             self.path = "/output.txt"
         if self.path == "/logout" and self.authedforadmin:
             self.authed = False
