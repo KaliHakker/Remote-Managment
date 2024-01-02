@@ -2,21 +2,23 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import http.server
 import os
 from urllib.parse import quote, unquote
+current = os.getcwd()
+passw = input("Select password that protects remote control panel: ")
 class Serv(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
-            print(self.authedforadmin)
+            self.authedforadmin
         except:
             self.authedforadmin = False
         if self.path == '/':
             self.path = '/index.html'
             try:
-                os.remove("/home/voldemort/GitHub/Login-Pages/login-form-08/login-form-08/output.txt")
+                os.remove(current + "/output.txt")
             except FileNotFoundError:
                 pass
         if self.path == "/admin":
             try:
-                os.remove("/home/voldemort/GitHub/Login-Pages/login-form-08/login-form-08/output.txt")
+                os.remove(current + "/output.txt")
             except FileNotFoundError:
                 pass
         if self.path == "/st.py":
@@ -62,15 +64,12 @@ class Serv(BaseHTTPRequestHandler):
             except KeyError:
                 print("MY SERVER: Client has modified source code.")
                 return self.do_GET()
-            if (name == "admin") and (password == "IssiOnProgemisesHalb"):
+            if (name == "admin") and (password == passw):
                 self.path = '/admin.html'
-                print("ADMINADMIN")
                 self.authedforadmin = True
             else:
                 self.path = '/try_again_index.html'
-                print("EBAADMIN")
         if self.path == "/output.txt":
-            print ("MY SERVER: The POST request is for the /cmd URL.")
 
             content_length = int(self.headers['Content-Length'])
             post_data_bytes = self.rfile.read(content_length)
@@ -84,8 +83,7 @@ class Serv(BaseHTTPRequestHandler):
             for item in list_of_post_data:
                 variable, value = item.split('=')
                 post_data_dict[variable] = value
-            os.system(unquote(post_data_dict["cmd"]).replace("+", " ") + ">> /home/voldemort/GitHub/Login-Pages/login-form-08/login-form-08/output.txt")
-            print("Executed command " + post_data_dict["cmd"] + " > output.txt")
+            os.system(unquote(post_data_dict["cmd"]).replace("+", " ") + ">> " + current "/output.txt")
             self.path = "/output.txt"
         if self.path == "/logout" and self.authedforadmin:
             self.authed = False
@@ -93,6 +91,6 @@ class Serv(BaseHTTPRequestHandler):
         return self.do_GET()
 
 
-
+print("Login to localhost:8081 with username admin and password " + passw)
 httpd = HTTPServer(('localhost', 8081), Serv)
 httpd.serve_forever()
