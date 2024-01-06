@@ -60,7 +60,7 @@ class Serv(BaseHTTPRequestHandler):
             print ("MY SERVER: I have changed the post data to a dict and here it is:\n", post_data_dict)
             try:
                 name = post_data_dict['name']
-                password = post_data_dict["password"]
+                password = unquote(post_data_dict["password"])
             except KeyError:
                 print("MY SERVER: Client has modified source code.")
                 return self.do_GET()
